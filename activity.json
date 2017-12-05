@@ -1,0 +1,19 @@
+{
+  "name": "ConfigReader",
+  "version": "0.0.1",
+  "type": "flogo:activity",
+  "description": "Read configuration from a file",
+  "author": "Philippe GABERT <pgabert@tibco.com>",
+  "inputs":[
+    {
+      "name": "configFile",
+      "type": "string"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "output",
+      "type": "string"
+    }
+  ]
+}
