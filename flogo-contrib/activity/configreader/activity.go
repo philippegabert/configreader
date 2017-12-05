@@ -48,10 +48,11 @@ func (a *ConfigReader) Eval(context activity.Context) (done bool, err error)  {
     	log.Error("Error while reading configuration file ! ", err)
     }
 
-    username, err := config.GetString("test_config", "default")
+    confValue, err := config.GetString("test_config", "default")
 	if err != nil {
-	
+		log.Error("Error while getting configuration value ! ", err)
 	}
 
+	log.Info("Final value: ",confValue)
 	return true, nil
 }
