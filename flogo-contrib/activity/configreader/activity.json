@@ -4,6 +4,8 @@
   "type": "flogo:activity",
   "description": "Read configuration from a file",
   "author": "Philippe GABERT <pgabert@tibco.com>",
+  "ref": "github.com/philippegabert/configreader/flogo-contrib/activity/configreader",
+  "homepage": "https://github.com/philippegabert/configreader/flogo-contrib/activity/configreader",
   "inputs":[
     {
       "name": "configFile",

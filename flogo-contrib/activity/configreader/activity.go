@@ -1,4 +1,4 @@
-package ConfigReader
+package configreader
 
 import (
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
