@@ -17,6 +17,8 @@ var log = logger.GetLogger("activity-tibco-configreader")
 const (
 	configFile = "configFile"
 	readEachTime = "readEachTime"
+	configName = "configName"
+	configValue = "configValue"
 )
 
 type ConfigReader struct {
@@ -35,7 +37,7 @@ func (a *ConfigReader) Metadata() *activity.Metadata {
 	return a.metadata
 }
 
-func (a *ConfigReader) getConfig(configFile string, reachEachTime bool, configName string, configType string) string{
+func (a *ConfigReader) getConfig(configFile string, reachEachTime bool, confName string, configType string) interface{}{
 	a.Lock()
 	defer a.Unlock()
 
@@ -53,7 +55,7 @@ func (a *ConfigReader) getConfig(configFile string, reachEachTime bool, configNa
 	    }
 	}
 
-    confValue, err := a.gonfigConf.GetString(configName, "default")
+    confValue, err := a.gonfigConf.GetString(confName, "default")
 	if err != nil {
 		log.Error("Error while getting configuration value ! ", err)
 	}
@@ -95,12 +97,13 @@ func (a *ConfigReader) Eval(context activity.Context) (done bool, err error)  {
 	if context.GetInput(readEachTime) != nil {
 		log.Debug("Variable readEachTime is not null.")
 		readEachTimeB, _ = toBool(context.GetInput(readEachTime))
-		log.Debug("Variable readEachTimeB = ", readEachTimeB)
 	}
 
 	log.Debug("Getting config value...")
-	configValue := a.getConfig(configFile, readEachTimeB, "test_config", "string")
-	log.Debugf("Final value returned [%s]", configValue)
+	confValue := a.getConfig(configFile, readEachTimeB, configName, "string")
+	log.Debugf("Final value returned [%s]", confValue)
+
+	context.SetOutput(configValue, confValue)
 
 	return true, nil
 }
