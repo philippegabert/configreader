@@ -64,14 +64,19 @@ func (a *ConfigReader) getConfig(configFile string, reachEachTime bool, confName
 
 	switch configType {
 		case "string":
+			log.debug("Reading STRING value")
 			confValue, err = a.gonfigConf.GetString(confName, defaultValue)
 		case "int":
-			confValue, err = a.gonfigConf.GetInt(confName, 0)
+			log.debug("Reading INT value")
+			confValue, err = a.gonfigConf.GetInt(confName, defaultValue)
 		case "float":
-			confValue, err = a.gonfigConf.GetFloat(confName, 0)
+			log.debug("Reading FLOAT value")
+			confValue, err = a.gonfigConf.GetFloat(confName, defaultValue)
 		case "bool":
-			confValue, err = a.gonfigConf.GetBool(confName, true)
+			log.debug("Reading BOOL value")
+			confValue, err = a.gonfigConf.GetBool(confName, defaultValue)
 		default:
+			log.debug("Reading STRING value")
 			confValue, err = a.gonfigConf.GetString(confName, defaultValue)
 	}
 
@@ -115,7 +120,7 @@ func (a *ConfigReader) setDefaultValue(context activity.Context) interface {}  {
 		
 		configurationDefaultValue = ""
 	}
-	log.Debugf("Using default value [%s]", configurationDefaultValue)
+	log.Debugf("Input default value is [%s]", configurationDefaultValue)
 	return configurationDefaultValue
 }
 
