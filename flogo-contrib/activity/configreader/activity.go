@@ -6,6 +6,7 @@ import (
 	"github.com/creamdog/gonfig"
 	"os"
 	"sync"
+	"strconv"
 )
 
 // log is the default package logger
@@ -68,7 +69,7 @@ func toBool(val interface{}) (bool, error) {
 		s, ok := val.(string)
 
 		if !ok {
-			return false, fmt.Errorf("unable to convert to boolean")
+			return false, log.Errorf("unable to convert to boolean")
 		}
 
 		var err error
