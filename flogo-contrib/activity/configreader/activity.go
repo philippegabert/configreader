@@ -110,18 +110,55 @@ func toBool(val interface{}) (bool, error) {
 	return b, nil
 }
 
-func (a *ConfigReader) setDefaultValue(context activity.Context) interface {}  {
+func (a *ConfigReader) setDefaultValue(defaultVal interface{}, configType string) interface {}  {
+	var configurationDefaultValueTmp interface{}
+	var confValue interface{}
 
-	// So far, only string.....
-	var configurationDefaultValue string
-	if context.GetInput(configDefaultVal) != nil {
-		configurationDefaultValue = context.GetInput(configDefaultVal).(string)
-	} else {
-		
-		configurationDefaultValue = ""
+	var err error
+
+	if defaultVal != nil {
+		configurationDefaultValueTmp = defaultVal
 	}
-	log.Debugf("Input default value is [%s]", configurationDefaultValue)
-	return configurationDefaultValue
+
+	switch configType {
+		case "string":
+			if configurationDefaultValueTmp != nil {
+				confValue = configurationDefaultValueTmp.(string)
+			} else {
+				confValue = ""
+			}
+		case "int":
+			if configurationDefaultValueTmp != nil {
+				confValue, err = strconv.ParseInt(configurationDefaultValueTmp.(string), 10, 64)
+			} else {
+				confValue = 0
+			}
+		case "float":
+			if configurationDefaultValueTmp != nil {
+				confValue, err = strconv.ParseFloat(configurationDefaultValueTmp.(string), 64)
+			} else {
+				confValue = 0
+			}
+		case "bool":
+			if configurationDefaultValueTmp != nil {
+				confValue, err = strconv.ParseBool(configurationDefaultValueTmp.(string))
+			} else {
+				confValue = true
+			}
+		default:
+			if configurationDefaultValueTmp != nil {
+				confValue = configurationDefaultValueTmp.(string)
+			} else {
+				confValue = ""
+			}
+	}
+
+	if err != nil {
+		log.Error("Error while setting default value !")
+	}
+
+	log.Debug("Input default value is [%s]", confValue)
+	return confValue
 }
 
 // Eval implements activity.Activity.Eval
@@ -151,7 +188,7 @@ func (a *ConfigReader) Eval(context activity.Context) (done bool, err error)  {
 		}
 		log.Debugf("Configuration name [%s], Configuration type [%s]", configurationName, configurationType)
 
-		configurationDefaultValue := a.setDefaultValue(context)
+		configurationDefaultValue := a.setDefaultValue(context.GetInput(configDefaultVal), configurationType)
 
 		log.Debug("Getting config value...")
 		confValue := a.getConfig(configFile, readEachTimeB, configurationName, configurationType, configurationDefaultValue)
