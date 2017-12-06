@@ -1,0 +1,6 @@
+{
+        "string_config" : "TIBCO",
+        "bool_config": false,
+        "int_config": 55,
+        "float_config": 22.22
+}
