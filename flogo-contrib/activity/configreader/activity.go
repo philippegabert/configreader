@@ -93,17 +93,26 @@ func (a *ConfigReader) Eval(context activity.Context) (done bool, err error)  {
 	log.Debugf("Config file [%s]", configFile)
 
 	var readEachTimeB bool
+	var configurationName string
 
 	if context.GetInput(readEachTime) != nil {
 		log.Debug("Variable readEachTime is not null.")
 		readEachTimeB, _ = toBool(context.GetInput(readEachTime))
 	}
+	if context.GetInput(configName) != nil {
+		log.Debugf("Configuration name [%s]", configName)
+		configurationName = context.GetInput(readEachTime).(string)
+		log.Debug("Getting config value...")
+		confValue := a.getConfig(configFile, readEachTimeB, configurationName, "string")
+		log.Debugf("Final value returned [%s]", confValue)
 
-	log.Debug("Getting config value...")
-	confValue := a.getConfig(configFile, readEachTimeB, configName, "string")
-	log.Debugf("Final value returned [%s]", confValue)
+		context.SetOutput(configValue, confValue)
 
-	context.SetOutput(configValue, confValue)
+		return true, nil
+	} else {
+		return false, fmt.Errorf("No configuration name has been set !")
+	}
 
-	return true, nil
+
+	
 }
