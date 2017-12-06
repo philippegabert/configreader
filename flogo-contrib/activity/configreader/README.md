@@ -60,7 +60,7 @@ Inputs and Outputs:
 
 ## Configuration Examples
 
-![String Config](string_config.png| width=100)
+![String Config](string_config.png | width=100)
 - Configuration will be read from file **/home/pi/config.json**
 - Name of the configuration element is **string_config**
 - Type of the configuration element is **string**
