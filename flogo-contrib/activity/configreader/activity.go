@@ -61,6 +61,27 @@ func (a *ConfigReader) getConfig(configFile string, reachEachTime bool, configNa
 	return confValue
 }
 
+func toBool(val interface{}) (bool, error) {
+
+	b, ok := val.(bool)
+	if !ok {
+		s, ok := val.(string)
+
+		if !ok {
+			return false, fmt.Errorf("unable to convert to boolean")
+		}
+
+		var err error
+		b, err = strconv.ParseBool(s)
+
+		if err != nil {
+			return false, err
+		}
+	}
+
+	return b, nil
+}
+
 // Eval implements activity.Activity.Eval
 func (a *ConfigReader) Eval(context activity.Context) (done bool, err error)  {
 
@@ -70,8 +91,8 @@ func (a *ConfigReader) Eval(context activity.Context) (done bool, err error)  {
 	var readEachTimeB bool
 
 	if context.GetInput(readEachTime) != nil {
-		log.Debug("Variable readEachTime is not null. (Value = "+context.GetInput(readEachTime)+")")
-		readEachTimeB = context.GetInput(readEachTime).(bool)
+		log.Debug("Variable readEachTime is not null. (Value = ", toBool(context.GetInput(readEachTime)))
+		readEachTimeB = toBool(context.GetInput(readEachTime))
 		log.Debug("Variable readEachTimeB = ", readEachTimeB)
 	}
 
