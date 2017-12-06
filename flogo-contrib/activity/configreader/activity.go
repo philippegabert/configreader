@@ -33,7 +33,7 @@ func (a *ConfigReader) Metadata() *activity.Metadata {
 	return a.metadata
 }
 
-func (a *ConfigReader) getConfig(configFile string, reachEachTime bool, configName string, configType string) {
+func (a *ConfigReader) getConfig(configFile string, reachEachTime bool, configName string, configType string) string{
 	a.Lock()
 	defer a.Unlock()
 
@@ -43,7 +43,7 @@ func (a *ConfigReader) getConfig(configFile string, reachEachTime bool, configNa
 			log.Error("Error while opening file ! ", err)
 		}
 		defer f.Close();
-		a.gonfigConf, err := gonfig.FromJson(f)
+		a.gonfigConf, err = gonfig.FromJson(f)
 		if err != nil {
 	    	log.Error("Error while reading configuration file ! ", err)
 	    }
@@ -65,8 +65,10 @@ func (a *ConfigReader) Eval(context activity.Context) (done bool, err error)  {
 	configFile := context.GetInput(configFile).(string)
 	log.Debugf("Config [%s]", configFile)
 
+	var readEachTimeB bool
+
 	if context.GetInput(readEachTime) != nil {
-		readEachTimeB := context.GetInput(readEachTime).(bool)
+		readEachTimeB = context.GetInput(readEachTime).(bool)
 	}
 
 	configValue := a.getConfig(configFile, readEachTimeB, "test_config", "string")
