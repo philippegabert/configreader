@@ -92,8 +92,8 @@ func (a *ConfigReader) Eval(context activity.Context) (done bool, err error)  {
 	var readEachTimeB bool
 
 	if context.GetInput(readEachTime) != nil {
-		log.Debug("Variable readEachTime is not null. (Value = ", toBool(context.GetInput(readEachTime)))
-		readEachTimeB = toBool(context.GetInput(readEachTime))
+		log.Debug("Variable readEachTime is not null.")
+		readEachTimeB, _ = toBool(context.GetInput(readEachTime))
 		log.Debug("Variable readEachTimeB = ", readEachTimeB)
 	}
 
