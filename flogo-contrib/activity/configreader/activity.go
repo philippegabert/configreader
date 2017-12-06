@@ -20,7 +20,7 @@ const (
 type ConfigReader struct {
 	sync.Mutex
 	metadata *activity.Metadata
-	gonfigConf Gonfig
+	gonfigConf gonfig.Gonfig
 }
 
 // NewActivity creates a new activity
