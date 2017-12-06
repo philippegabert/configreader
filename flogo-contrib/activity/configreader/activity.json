@@ -9,7 +9,13 @@
   "inputs":[
     {
       "name": "configFile",
-      "type": "string"
+      "type": "string",
+      "required": "true"
+    },
+    {
+      "name": "configName",
+      "type": "string",
+      "required": "true"
     },
     {
       "name": "readEachTime",
@@ -18,7 +24,7 @@
   ],
   "outputs": [
     {
-      "name": "output",
+      "name": "configValue",
       "type": "string"
     }
   ]
