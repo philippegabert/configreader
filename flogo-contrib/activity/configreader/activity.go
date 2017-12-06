@@ -157,7 +157,7 @@ func (a *ConfigReader) setDefaultValue(defaultVal interface{}, configType string
 		log.Error("Error while setting default value !")
 	}
 
-	log.Debug("Input default value is [%s]", confValue)
+	log.Debugf("Input default value is [%s]", confValue)
 	return confValue
 }
 
