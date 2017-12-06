@@ -18,6 +18,15 @@
       "required": "true"
     },
     {
+      "name": "configType",
+      "type": "string",
+      "allowed" : ["string", "int", "float", "bool"]
+    },
+    {
+      "name": "defaultValue", 
+      "type": "any"
+    },
+    {
       "name": "readEachTime",
       "type": "bool"
     }
@@ -25,7 +34,7 @@
   "outputs": [
     {
       "name": "configValue",
-      "type": "string"
+      "type": "any"
     }
   ]
 }

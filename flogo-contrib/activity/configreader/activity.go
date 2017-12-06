@@ -19,6 +19,8 @@ const (
 	readEachTime = "readEachTime"
 	configName = "configName"
 	configValue = "configValue"
+	configType = "configType"
+	configDefaultVal = "defaultValue"
 )
 
 type ConfigReader struct {
@@ -37,7 +39,7 @@ func (a *ConfigReader) Metadata() *activity.Metadata {
 	return a.metadata
 }
 
-func (a *ConfigReader) getConfig(configFile string, reachEachTime bool, confName string, configType string) interface{}{
+func (a *ConfigReader) getConfig(configFile string, reachEachTime bool, confName string, configType string, defaultValue interface{}) interface{}{
 	a.Lock()
 	defer a.Unlock()
 
@@ -55,12 +57,29 @@ func (a *ConfigReader) getConfig(configFile string, reachEachTime bool, confName
 	    }
 	}
 
-    confValue, err := a.gonfigConf.GetString(confName, "default")
+	var confValue interface{}
+
+	var err error
+
+
+	switch configType {
+		case "string":
+			confValue, err = a.gonfigConf.GetString(confName, defaultValue)
+		case "int":
+			confValue, err = a.gonfigConf.GetInt(confName, 0)
+		case "float":
+			confValue, err = a.gonfigConf.GetFloat(confName, 0)
+		case "bool":
+			confValue, err = a.gonfigConf.GetBool(confName, true)
+		default:
+			confValue, err = a.gonfigConf.GetString(confName, defaultValue)
+	}
+
 	if err != nil {
 		log.Error("Error while getting configuration value ! ", err)
 	}
 
-	log.Info("Final value: ",confValue)
+	log.Debug("Final value: ",confValue)
 
 	return confValue
 }
@@ -86,6 +105,20 @@ func toBool(val interface{}) (bool, error) {
 	return b, nil
 }
 
+func (a *ConfigReader) setDefaultValue(context activity.Context) interface {}  {
+
+	// So far, only string.....
+	var configurationDefaultValue string
+	if context.GetInput(configDefaultVal) != nil {
+		configurationDefaultValue = context.GetInput(configDefaultVal).(string)
+	} else {
+		
+		configurationDefaultValue = ""
+	}
+	log.Debugf("Using default value [%s]", configurationDefaultValue)
+	return configurationDefaultValue
+}
+
 // Eval implements activity.Activity.Eval
 func (a *ConfigReader) Eval(context activity.Context) (done bool, err error)  {
 
@@ -93,17 +126,30 @@ func (a *ConfigReader) Eval(context activity.Context) (done bool, err error)  {
 	log.Debugf("Config file [%s]", configFile)
 
 	var readEachTimeB bool
-	var configurationName string
+	
 
 	if context.GetInput(readEachTime) != nil {
 		log.Debug("Variable readEachTime is not null.")
 		readEachTimeB, _ = toBool(context.GetInput(readEachTime))
 	}
-	if context.GetInput(configName) != nil {		
+	if context.GetInput(configName) != nil {
+		var configurationName string
+		var configurationType string
+
 		configurationName = context.GetInput(configName).(string)
-		log.Debugf("Configuration name [%s]", configurationName)
+		
+		if context.GetInput(configType) != nil {
+			configurationType = context.GetInput(configType).(string) 
+		} else {
+			log.Debug("Using default value (string) for configuration type.")
+			configurationType = "string"
+		}
+		log.Debugf("Configuration name [%s], Configuration type [%s]", configurationName, configurationType)
+
+		configurationDefaultValue := a.setDefaultValue(context)
+
 		log.Debug("Getting config value...")
-		confValue := a.getConfig(configFile, readEachTimeB, configurationName, "string")
+		confValue := a.getConfig(configFile, readEachTimeB, configurationName, configurationType, configurationDefaultValue)
 		log.Debugf("Final value returned [%s]", confValue)
 
 		context.SetOutput(configValue, confValue)
@@ -112,7 +158,4 @@ func (a *ConfigReader) Eval(context activity.Context) (done bool, err error)  {
 	} else {
 		return false, fmt.Errorf("No configuration name has been set !")
 	}
-
-
-	
 }
