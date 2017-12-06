@@ -37,7 +37,9 @@ func (a *ConfigReader) getConfig(configFile string, reachEachTime bool, configNa
 	a.Lock()
 	defer a.Unlock()
 
+	log.Debug("Variable readEachTime = ", reachEachTime)
 	if reachEachTime || a.gonfigConf == nil {
+		log.Debug("Need to read the configuration file...")
 		f, err := os.Open(configFile)
 		if err != nil {
 			log.Error("Error while opening file ! ", err)
@@ -63,14 +65,17 @@ func (a *ConfigReader) getConfig(configFile string, reachEachTime bool, configNa
 func (a *ConfigReader) Eval(context activity.Context) (done bool, err error)  {
 
 	configFile := context.GetInput(configFile).(string)
-	log.Debugf("Config [%s]", configFile)
+	log.Debugf("Config file [%s]", configFile)
 
 	var readEachTimeB bool
 
 	if context.GetInput(readEachTime) != nil {
+		log.Debug("Variable readEachTime is not null. (Value = "+context.GetInput(readEachTime)+")")
 		readEachTimeB = context.GetInput(readEachTime).(bool)
+		log.Debug("Variable readEachTimeB = ", readEachTimeB)
 	}
 
+	log.Debug("Getting config value...")
 	configValue := a.getConfig(configFile, readEachTimeB, "test_config", "string")
 	log.Debugf("Final value returned [%s]", configValue)
 
