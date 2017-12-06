@@ -99,9 +99,9 @@ func (a *ConfigReader) Eval(context activity.Context) (done bool, err error)  {
 		log.Debug("Variable readEachTime is not null.")
 		readEachTimeB, _ = toBool(context.GetInput(readEachTime))
 	}
-	if context.GetInput(configName) != nil {
-		log.Debugf("Configuration name [%s]", configName)
-		configurationName = context.GetInput(readEachTime).(string)
+	if context.GetInput(configName) != nil {		
+		configurationName = context.GetInput(configName).(string)
+		log.Debugf("Configuration name [%s]", configurationName)
 		log.Debug("Getting config value...")
 		confValue := a.getConfig(configFile, readEachTimeB, configurationName, "string")
 		log.Debugf("Final value returned [%s]", confValue)
