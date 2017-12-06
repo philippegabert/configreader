@@ -7,6 +7,7 @@ import (
 	"os"
 	"sync"
 	"strconv"
+	"fmt"
 )
 
 // log is the default package logger
@@ -69,7 +70,7 @@ func toBool(val interface{}) (bool, error) {
 		s, ok := val.(string)
 
 		if !ok {
-			return false, log.Errorf("unable to convert to boolean")
+			return false, fmt.Errorf("Unable to convert to boolean")
 		}
 
 		var err error
