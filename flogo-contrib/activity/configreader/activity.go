@@ -64,19 +64,19 @@ func (a *ConfigReader) getConfig(configFile string, reachEachTime bool, confName
 
 	switch configType {
 		case "string":
-			log.debug("Reading STRING value")
+			log.Debug("Reading STRING value")
 			confValue, err = a.gonfigConf.GetString(confName, defaultValue)
 		case "int":
-			log.debug("Reading INT value")
+			log.Debug("Reading INT value")
 			confValue, err = a.gonfigConf.GetInt(confName, defaultValue)
 		case "float":
-			log.debug("Reading FLOAT value")
+			log.Debug("Reading FLOAT value")
 			confValue, err = a.gonfigConf.GetFloat(confName, defaultValue)
 		case "bool":
-			log.debug("Reading BOOL value")
+			log.Debug("Reading BOOL value")
 			confValue, err = a.gonfigConf.GetBool(confName, defaultValue)
 		default:
-			log.debug("Reading STRING value")
+			log.Debug("Reading STRING value")
 			confValue, err = a.gonfigConf.GetString(confName, defaultValue)
 	}
 
